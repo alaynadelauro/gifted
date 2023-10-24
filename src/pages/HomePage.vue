@@ -14,18 +14,18 @@
       <div class="col-12 d-flex flex-column align-items-center">
         <h1 class="text-center py-3"><i class="mdi mdi-heart px-5"></i>Gifted<i class="px-5 mdi mdi-heart"></i></h1>
         <div>
-          <button class="btn btn-pink mb-1" @click="getPostForm()"><i class="mdi mdi-gift"></i></button>
+          <button class="btn btn-pink mb-1" @click="getForm()"><i class="mdi mdi-gift"></i></button>
         </div>
       </div>
     </div>
-    <div class="row">
+    <div v-if="goGetForm == true" class="row">
       <div class="col-12">
-        <form @submit="createGift()">
+        <form @submit.prevent="createGift()">
           <div class="d-flex flex-row justify-content-center">
             <div class="mx-3 mt-2">
               <input type="text" required minlength="1" maxlength="30" placeholder="tag here">
             </div>
-            <div class="mx-3">
+            <div class="mx-3 mt-2">
               <input type="url" required maxlength="500" placeholder="image url here">
             </div>
           </div>
@@ -56,6 +56,7 @@ import { giftService } from '../services/GiftService.js'
 import { computed, onMounted } from 'vue';
 import { logger } from '../utils/Logger.js';
 import { AppState } from '../AppState.js'
+import Pop from '../utils/Pop';
 
 export default {
   setup() {
@@ -80,7 +81,29 @@ export default {
     })
     return {
       gifts: computed(() => AppState.gifts),
-      account: computed(() => AppState.account)
+      account: computed(() => AppState.account),
+      goGetForm: computed(() => AppState.goGetForm),
+      getForm() {
+        if (AppState.goGetForm == false) {
+          AppState.goGetForm = true
+        } else {
+          if (AppState.goGetForm == true) {
+            AppState.goGetForm = false
+          }
+        }
+      },
+      async makeGift() {
+        try {
+          if (AppState.account != null) {
+            const res = await giftService.makeGift
+          } else {
+            Pop.error('Please Log In to Create')
+          }
+        } catch (error) {
+          Pop.error(error)
+        }
+      }
+
     }
   }
 }
