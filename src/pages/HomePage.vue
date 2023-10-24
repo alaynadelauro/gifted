@@ -23,7 +23,7 @@
         <form @submit.prevent="createGift()">
           <div class="d-flex flex-row justify-content-center">
             <div class="mx-3 mt-2">
-              <input type="text" required minlength="1" maxlength="30" placeholder="tag here">
+              <input v-model="tag" type="text" required minlength="1" maxlength="30" placeholder="tag here">
             </div>
             <div class="mx-3 mt-2">
               <input type="url" required maxlength="500" placeholder="image url here">
@@ -53,13 +53,15 @@
 
 <script>
 import { giftService } from '../services/GiftService.js'
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { logger } from '../utils/Logger.js';
 import { AppState } from '../AppState.js'
 import Pop from '../utils/Pop';
 
 export default {
   setup() {
+    const tag = ref('');
+
     async function getGifts() {
       try {
         // logger.log('this function loaded')
@@ -95,7 +97,8 @@ export default {
       async makeGift() {
         try {
           if (AppState.account != null) {
-            const res = await giftService.makeGift
+            const res = await giftService.makeGift()
+            logger.log(res)
           } else {
             Pop.error('Please Log In to Create')
           }
