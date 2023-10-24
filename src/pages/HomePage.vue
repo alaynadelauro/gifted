@@ -11,13 +11,35 @@
 <template>
   <div class="container-fluid">
     <div class="row top">
-      <div class="col-12">
+      <div class="col-12 d-flex flex-column align-items-center">
         <h1 class="text-center py-3"><i class="mdi mdi-heart px-5"></i>Gifted<i class="px-5 mdi mdi-heart"></i></h1>
+        <div>
+          <button class="btn btn-pink mb-1" @click="getPostForm()"><i class="mdi mdi-gift"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <form @submit="createGift()">
+          <div class="d-flex flex-row justify-content-center">
+            <div class="mx-3 mt-2">
+              <input type="text" required minlength="1" maxlength="30" placeholder="tag here">
+            </div>
+            <div class="mx-3">
+              <input type="url" required maxlength="500" placeholder="image url here">
+            </div>
+          </div>
+          <div class="justify-content-center d-flex mt-2">
+            <button class="btn btn-pink" type="submit">
+              <i class="mdi mdi-plus"></i>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
     <div class="row justify-content-around">
       <div v-for="gift in gifts" :key="gift.id" class="col-3 p-4 m-3">
-        <div v-if="gift.opened == false" class="lockedCard">
+        <div v-if="gift.opened == false" class="lockedCard" @click="this.unlockGifts(gift)">
           <p class="text-center fs-3">You Have Not Unlocked This Gift Yet</p>
         </div>
         <div v-else-if="gift.opened == true" class="unlockedCard text-center">
@@ -43,15 +65,22 @@ export default {
         await giftService.getGifts()
       } catch (error) {
         logger.error(error)
-
       }
-
     }
+    async function unlockGifts(gift) {
+      try {
+        await giftService.lockGifts(gift)
+      } catch (error) {
+        logger.error(error)
+      }
+    }
+
     onMounted(() => {
       getGifts()
     })
     return {
-      gifts: computed(() => AppState.gifts)
+      gifts: computed(() => AppState.gifts),
+      account: computed(() => AppState.account)
     }
   }
 }
@@ -65,8 +94,10 @@ export default {
   background-color: beige;
 }
 
-.card-style {
+
+.btn-pink {
   border: 3px solid rgb(191, 62, 83);
+  color: rgb(191, 62, 83);
 }
 
 * {

@@ -11,6 +11,10 @@ class GiftService {
         AppState.gifts = gifts
         // logger.log(AppState.gifts)
     }
+    async unlockGifts(gift) {
+        const unlockedGift = AppState.gifts.find(gift)
+        await api.put('api/gifts', unlockedGift)
+    }
 }
 
 export const giftService = new GiftService()

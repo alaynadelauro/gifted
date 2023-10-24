@@ -6,5 +6,6 @@ export class Gift {
         this.updatedAt = data.updatedAt || new Date(data.updatedAt)
         this.url = data.url
         this.tag = data.tag
+        this.id = data.id
     }
 }
